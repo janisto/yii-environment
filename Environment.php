@@ -6,6 +6,7 @@
  * @version 1.0
  * @license public domain (http://unlicense.org)
  * @package extensions.environment
+ * @link https://github.com/janisto/yii-environment
  * 
  * Original sources: http://www.yiiframework.com/doc/cookbook/73/
  * 
