@@ -51,7 +51,7 @@ return array(
 
 				// Cache
 				'cache'=>array(
-					'class'=>'system.caching.CDummyCache',
+					'class'=>'CDummyCache',
 				),
 				
 				// Database
@@ -111,7 +111,7 @@ return array(
 
 				// Cache
 				'cache'=>array(
-					'class'=>'system.caching.CDummyCache',
+					'class'=>'CDummyCache',
 				),
 
 				// Database

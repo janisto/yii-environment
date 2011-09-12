@@ -44,7 +44,7 @@ return 	array(
 
 				// Cache
 				'cache'=>array(
-					'class'=>'system.caching.CFileCache',
+					'class'=>'CFileCache',
 				),
 	
 				// Database
@@ -110,7 +110,7 @@ return 	array(
 
 				// Cache
 				'cache'=>array(
-					'class'=>'system.caching.CFileCache',
+					'class'=>'CFileCache',
 				),
 
 				// Database

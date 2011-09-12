@@ -44,7 +44,7 @@ return array(
 
 				// Cache
 				'cache'=>array(
-					'class'=>'system.caching.CApcCache',
+					'class'=>'CApcCache',
 				),
 
 				// Database
@@ -103,7 +103,7 @@ return array(
 
 				// Cache
 				'cache'=>array(
-					'class'=>'system.caching.CApcCache',
+					'class'=>'CApcCache',
 				),
 
 				// Database
