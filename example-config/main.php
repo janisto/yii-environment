@@ -52,12 +52,19 @@ return array(
 
 			// Application components
 			'components'=>array(
-
+			
+				// Enable cookie-based authentication
 				'user'=>array(
-					// enable cookie-based authentication
 					'allowAutoLogin'=>true,
 				),
 
+				// Session cache. Requires cache application component.
+				// Storing sessions in APC is significantly faster than the default file-based session handling.
+				'session'=>array(
+					'class' => 'CCacheHttpSession',
+				),
+				
+				// URL manager
 				'urlManager'=>array(
 					'showScriptName'=>false,
 					'urlFormat'=>'path',
@@ -67,9 +74,9 @@ return array(
 						'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 					),
 				),
-
+				
+				// Use 'site/error' action to display errors
 				'errorHandler'=>array(
-					// use 'site/error' action to display errors
 					'errorAction'=>'site/error',
 				),
 
