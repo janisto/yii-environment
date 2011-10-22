@@ -1,9 +1,8 @@
 <?php
-
 /**
  * @name Environment
  * @author Jani Mikkonen
- * @version 1.0
+ * @version 1.1
  * @license public domain (http://unlicense.org)
  * @package extensions.environment
  * @link https://github.com/janisto/yii-environment
@@ -28,7 +27,9 @@ class Environment
 	private $_mode;
 
 	// Environment Yii properties
+	public $yiiFramework;		// path to Yii framework
 	public $yiiPath;			// path to yii.php
+	public $yiicPath;			// path to yiic.php
 	public $yiitPath;			// path to yiit.php
 	public $yiilitePath;		// path to yiilite.php
 	public $yiiLite;			// boolean
@@ -108,13 +109,15 @@ class Environment
 	private function setEnvironment()
 	{
 		// Load main config
-		$fileMainConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR').DIRECTORY_SEPARATOR.'main.php';
+		$fileMainConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
+						  .DIRECTORY_SEPARATOR.'main.php';
 		if (!file_exists($fileMainConfig))
 			throw new Exception('Cannot find main config file "'.$fileMainConfig.'".');
 		$configMain = require($fileMainConfig);
 
 		// Load specific config
-		$fileSpecificConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR').DIRECTORY_SEPARATOR.'mode_'.strtolower($this->_mode).'.php';
+		$fileSpecificConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
+							  .DIRECTORY_SEPARATOR.'mode_'.strtolower($this->_mode).'.php';
 		if (!file_exists($fileSpecificConfig))
 			throw new Exception('Cannot find mode specific config file "'.$fileSpecificConfig.'".');
 		$configSpecific = require($fileSpecificConfig);
@@ -123,17 +126,27 @@ class Environment
 		$config = self::mergeArray($configMain, $configSpecific);
 
 		// If one exists, load local config
-		$fileLocalConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR').DIRECTORY_SEPARATOR.'local.php';
+		$fileLocalConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
+						   .DIRECTORY_SEPARATOR.'local.php';
 		if (file_exists($fileLocalConfig)) {
 			// Merge local config into previously merged config
 			$configLocal = require($fileLocalConfig);
 			$config = self::mergeArray($config, $configLocal);
 		}
 
+		// Normalize the framework path
+		$framework = str_replace('\\', DIRECTORY_SEPARATOR, realpath($config['yiiFramework']));
+
+		if(!is_dir($framework)) {
+			throw new Exception('Invalid Yii framework path "'.$config['yiiFramework'].'".');
+		}
+		
 		// Set attributes
-		$this->yiiPath = $config['yiiPath'];
-		$this->yiitPath = $config['yiitPath'];
-		$this->yiilitePath = $config['yiilitePath'];
+		$this->yiiFramework = $framework;
+		$this->yiiPath = $framework.DIRECTORY_SEPARATOR.'yii.php';
+		$this->yiicPath = $framework.DIRECTORY_SEPARATOR.'yiic.php';
+		$this->yiitPath = $framework.DIRECTORY_SEPARATOR.'yiit.php';
+		$this->yiilitePath = $framework.DIRECTORY_SEPARATOR.'yiilite.php';
 		$this->yiiLite = $config['yiiLite'];
 		$this->yiiDebug = $config['yiiDebug'];
 		$this->yiiTraceLevel = $config['yiiTraceLevel'];
@@ -165,8 +178,10 @@ class Environment
 	 */
 	public function showDebug()
 	{
-		echo '<div style="position: absolute; bottom: 0; z-index: 99; height: 250px; overflow: auto; background-color: #ddd; color: #000; border: 1px solid #000; margin: 5px; padding: 5px;">
-			<pre>'.htmlspecialchars(print_r($this, true)).'</pre></div>';
+		print '<div style="position: absolute; left: 0; width: 100%; height: 250px; overflow: auto;'
+			  .'bottom: 0; z-index: 9999; color: #000; margin: 0; border-top: 1px solid #000;">'
+			  .'<pre style="margin: 0; background-color: #ddd; padding: 5px;">'
+			  .htmlspecialchars(print_r($this, true)).'</pre></div>';
 	}
 	
 	/**

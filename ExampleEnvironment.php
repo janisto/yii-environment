@@ -3,7 +3,7 @@
 require('Environment.php');
 
 /**
- * This is an example Environment, for when you want to use a custom SERVER_VAR
+ * This is an example Environment when you want to use a custom SERVER_VAR
  * or CONFIG_DIR, or want to use other than the predefined modes.
  *
  * If you use the extended class, don't forget to require and create it from your

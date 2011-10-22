@@ -1,4 +1,7 @@
 <?php
+/**
+ * This is the bootstrap file for web application.
+ */
 
 // Set environment
 require_once(dirname(__FILE__) . '/protected/extensions/environment/Environment.php');

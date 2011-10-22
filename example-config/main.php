@@ -7,10 +7,8 @@
 
 return array(
 
-	// Set yiiPath (relative to Environment.php)
-	'yiiPath'=>dirname(__FILE__) . '/../../../yii/framework/yii.php',
-	'yiitPath'=>dirname(__FILE__) . '/../../../yii/framework/yiit.php',
-	'yiilitePath'=>dirname(__FILE__) . '/../../../yii/framework/yiilite.php',
+	// Set Yii framework path relative to Environment.php
+	'yiiFramework'=>dirname(__FILE__) . '/../../../yii/framework',
 
 	// Include yiilite if this is set to true. Performance boost if APC cache is in use.
 	'yiiLite'=>false,
