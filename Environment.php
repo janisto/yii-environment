@@ -1,61 +1,143 @@
 <?php
+
 /**
  * @name Environment
  * @author Jani Mikkonen
- * @version 1.1
+ * @version 1.2
  * @license public domain (http://unlicense.org)
  * @package extensions.environment
  * @link https://github.com/janisto/yii-environment
  * 
  * Original sources: http://www.yiiframework.com/doc/cookbook/73/
- * 
  */
 
 class Environment
 {
-	// Environment settings (extend Environment class if you want to change these)
-	const SERVER_VAR = 'YII_ENVIRONMENT';	//Apache SetEnv var
-	const CONFIG_DIR = '../../config/';		//relative to Environment.php
-
-	// Valid modes (extend Environment class if you want to change or add to these)
-	const MODE_DEVELOPMENT = 100;
-	const MODE_TEST = 200;
-	const MODE_STAGING = 300;
-	const MODE_PRODUCTION = 400;
-
-	// Selected mode
-	private $_mode;
-
-	// Environment Yii properties
-	public $yiiFramework;		// path to Yii framework
-	public $yiiPath;			// path to yii.php
-	public $yiicPath;			// path to yiic.php
-	public $yiitPath;			// path to yiit.php
-	public $yiilitePath;		// path to yiilite.php
-	public $yiiLite;			// boolean
-	public $yiiDebug;			// int
-	public $yiiTraceLevel;		// int
-	
-	// Environment Yii statics to run
-	// @see http://www.yiiframework.com/doc/api/1.1/YiiBase#setPathOfAlias-detail
-	public $yiiSetPathOfAlias = array();	// array with "$alias=>$path" elements
-	
-	// Web application config
-	public $web = array();		// config array
-
-	// Console application config
-	public $console = array();	// config array
+	/**
+	 * Environment variable. Use Apache SetEnv or export in shell.
+	 */
+	const ENV_VAR = 'YII_ENVIRONMENT';
 
 	/**
-	 * Initilizes the Environment class with the given mode
+	 * Path to configuration folder relative to Environment.php.
+	 */
+	const CONFIG_DIR = '../../config/';
+
+	/**
+	 * Development mode.
+	 */
+	const MODE_DEVELOPMENT = 100;
+
+	/**
+	 * Test mode.
+	 */
+	const MODE_TEST = 200;
+
+	/**
+	 * Staging mode.
+	 */
+	const MODE_STAGING = 300;
+
+	/**
+	 * Production mode.
+	 */
+	const MODE_PRODUCTION = 400;
+
+	/**
+	 * Selected mode.
+	 *
+	 * @var string
+	 */
+	protected $_mode;
+
+	/**
+	 * Path to Yii framework folder.
+	 *
+	 * @var string
+	 */
+	public $yiiFramework;
+
+	/**
+	 * Path to yii.php.
+	 *
+	 * @var string
+	 */
+	public $yiiPath;
+
+	/**
+	 * Path to yiic.php.
+	 *
+	 * @var string
+	 */
+	public $yiicPath;
+
+	/**
+	 * Path to yiit.php.
+	 *
+	 * @var string
+	 */
+	public $yiitPath;
+
+	/**
+	 * Path to yiilite.php.
+	 *
+	 * @var string
+	 */
+	public $yiilitePath;
+
+	/**
+	 * Replace yii.php with yiilite.php. Performance boost if PHP APC extension is enabled.
+	 *
+	 * @var boolean
+	 */
+	public $yiiLite;
+
+	/**
+	 * Debug mode for YII_DEBUG.
+	 *
+	 * @var int
+	 */
+	public $yiiDebug;
+
+	/**
+	 * Trace level for YII_TRACE_LEVEL.
+	 *
+	 * @var int
+	 */
+	public $yiiTraceLevel;
+
+	/**
+	 * Yii path aliases. Array with "$alias=>$path" elements.
+	 *
+	 * @var array
+	 */
+	public $yiiSetPathOfAlias = array();
+
+	/**
+	 * Web application configuration array.
+	 *
+	 * @var array
+	 */
+	public $web = array();
+
+	/**
+	 * Console application configuration array.
+	 *
+	 * @var array
+	 */
+	public $console = array();
+
+	/**
+	 * Constructor. Initializes the Environment class with the given mode.
+	 *
 	 * @param constant $mode used to override automatically setting mode
 	 */
-	function __construct($mode = null)
+	public function __construct($mode = null)
 	{
 		$this->_mode = $this->getMode($mode);
-		$this->setEnvironment();
+		$this->setEnvironment($this->getConfig());
 	}
-	
+
 	/**
 	 * Basic setup for console and web application.
 	 */
@@ -75,27 +157,28 @@ class Environment
 		// Run Yii static functions
 		$this->runYiiStatics();
 	}
-	
+
 	/**
 	 * Get current environment mode depending on environment variable.
 	 * Override this function if you want to change this method.
+	 *
 	 * @param string $mode
 	 * @return string
 	 */
-	private function getMode($mode = null)
+	protected function getMode($mode = null)
 	{
 		// If not manually set
 		if (!isset($mode)) {
-			// Return mode based on Apache server var
-			if (isset($_SERVER[constant(get_class($this).'::SERVER_VAR')])) {
-				$mode = $_SERVER[constant(get_class($this).'::SERVER_VAR')];
+			// Return mode based on environment variable
+			if (isset($_SERVER[constant(get_class($this).'::ENV_VAR')])) {
+				$mode = $_SERVER[constant(get_class($this).'::ENV_VAR')];
 			} else {
 				// Defaults to production
 				$mode = 'PRODUCTION';
-				$_SERVER[constant(get_class($this).'::SERVER_VAR')] = $mode;
+				$_SERVER[constant(get_class($this).'::ENV_VAR')] = $mode;
 			}
 		}
-		
+
 		// Check if mode is valid
 		if (!defined(get_class($this).'::MODE_'.$mode))
 			throw new Exception('Invalid Environment mode supplied or selected'.$mode);
@@ -104,9 +187,11 @@ class Environment
 	}
 
 	/**
-	 * Sets the environment and configuration for the selected mode
+	 * Load and merge configuration files into one array.
+	 *
+	 * @return array $config array to be processed by setEnvironment.
 	 */
-	private function setEnvironment()
+	protected function getConfig()
 	{
 		// Load main config
 		$fileMainConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
@@ -134,13 +219,23 @@ class Environment
 			$config = self::mergeArray($config, $configLocal);
 		}
 
+		return $config;
+	}
+
+	/**
+	 * Sets the environment and configuration for the selected mode.
+	 *
+	 * @param array $config configuration array
+	 */
+	protected function setEnvironment($config)
+	{
 		// Normalize the framework path
 		$framework = str_replace('\\', DIRECTORY_SEPARATOR, realpath($config['yiiFramework']));
 
 		if(!is_dir($framework)) {
 			throw new Exception('Invalid Yii framework path "'.$config['yiiFramework'].'".');
 		}
-		
+
 		// Set attributes
 		$this->yiiFramework = $framework;
 		$this->yiiPath = $framework.DIRECTORY_SEPARATOR.'yii.php';
@@ -150,29 +245,31 @@ class Environment
 		$this->yiiLite = $config['yiiLite'];
 		$this->yiiDebug = $config['yiiDebug'];
 		$this->yiiTraceLevel = $config['yiiTraceLevel'];
+
 		if(isset($config['web']['config']) && !empty($config['web']['config']))
 			$this->web = $config['web']['config'];
 		$this->web['params']['environment'] = strtolower($this->_mode);
+
 		if(isset($config['console']['config']) && !empty($config['console']['config']))
 			$this->console = $config['console']['config'];
 		$this->console['params']['environment'] = strtolower($this->_mode);
 
-		// Set Yii statics
 		$this->yiiSetPathOfAlias = $config['yiiSetPathOfAlias'];
 	}
 
 	/**
 	 * Run Yii static functions.
 	 * Call this function after including the Yii framework in your bootstrap file.
+	 *
+	 * @see http://www.yiiframework.com/doc/api/1.1/YiiBase#setPathOfAlias-detail
 	 */
 	public function runYiiStatics()
 	{
-		// Yii::setPathOfAlias();
 		foreach($this->yiiSetPathOfAlias as $alias => $path) {
 			Yii::setPathOfAlias($alias, $path);
 		}
 	}
-	
+
 	/**
 	 * Show current Environment class values
 	 */
@@ -183,18 +280,18 @@ class Environment
 			  .'<pre style="margin: 0; background-color: #ddd; padding: 5px;">'
 			  .htmlspecialchars(print_r($this, true)).'</pre></div>';
 	}
-	
+
 	/**
 	 * Merges two arrays into one recursively.
+	 * Taken from Yii's CMap::mergeArray, since php does not supply a native
+	 * function that produces the required result.
+	 *
+	 * @see http://www.yiiframework.com/doc/api/1.1/CMap#mergeArray-detail
 	 * @param array $a array to be merged to
 	 * @param array $b array to be merged from
 	 * @return array the merged array (the original arrays are not changed.)
-	 *
-	 * Taken from Yii's CMap::mergeArray, since php does not supply a native
-	 * function that produces the required result.
-	 * @see http://www.yiiframework.com/doc/api/1.1/CMap#mergeArray-detail
 	 */
-	private static function mergeArray($a,$b)
+	protected static function mergeArray($a,$b)
 	{
 		foreach($b as $k=>$v) {
 			if(is_integer($k))
@@ -206,5 +303,4 @@ class Environment
 		}
 		return $a;
 	}
-
 }
