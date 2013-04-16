@@ -2,8 +2,8 @@
 
 /**
  * @name Environment
- * @author Jani Mikkonen
- * @version 1.2
+ * @author Jani Mikkonen <janisto@php.net>
+ * @version 1.3.0-dev
  * @license public domain (http://unlicense.org)
  * @package extensions.environment
  * @link https://github.com/janisto/yii-environment
@@ -130,7 +130,7 @@ class Environment
 	/**
 	 * Constructor. Initializes the Environment class with the given mode.
 	 *
-	 * @param constant $mode used to override automatically setting mode
+	 * @param $mode
 	 */
 	public function __construct($mode = null)
 	{
@@ -148,7 +148,7 @@ class Environment
 		defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', $this->yiiTraceLevel);
 
 		// Include Yii
-		if($this->yiiLite) {
+		if ($this->yiiLite) {
 			require_once($this->yiilitePath);
 		} else {
 			require_once($this->yiiPath);
@@ -163,6 +163,7 @@ class Environment
 	 * Override this function if you want to change this method.
 	 *
 	 * @param string $mode
+	 * @throws Exception
 	 * @return string
 	 */
 	protected function getMode($mode = null)
@@ -180,8 +181,9 @@ class Environment
 		}
 
 		// Check if mode is valid
-		if (!defined(get_class($this).'::MODE_'.$mode))
+		if (!defined(get_class($this).'::MODE_'.$mode)) {
 			throw new Exception('Invalid Environment mode supplied or selected'.$mode);
+		}
 
 		return $mode;
 	}
@@ -189,22 +191,25 @@ class Environment
 	/**
 	 * Load and merge configuration files into one array.
 	 *
+	 * @throws Exception
 	 * @return array $config array to be processed by setEnvironment.
 	 */
 	protected function getConfig()
 	{
 		// Load main config
 		$fileMainConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
-						  .DIRECTORY_SEPARATOR.'main.php';
-		if (!file_exists($fileMainConfig))
+			.DIRECTORY_SEPARATOR.'main.php';
+		if (!file_exists($fileMainConfig)) {
 			throw new Exception('Cannot find main config file "'.$fileMainConfig.'".');
+		}
 		$configMain = require($fileMainConfig);
 
 		// Load specific config
 		$fileSpecificConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
-							  .DIRECTORY_SEPARATOR.'mode_'.strtolower($this->_mode).'.php';
-		if (!file_exists($fileSpecificConfig))
+			.DIRECTORY_SEPARATOR.'mode_'.strtolower($this->_mode).'.php';
+		if (!file_exists($fileSpecificConfig)) {
 			throw new Exception('Cannot find mode specific config file "'.$fileSpecificConfig.'".');
+		}
 		$configSpecific = require($fileSpecificConfig);
 
 		// Merge specific config into main config
@@ -212,7 +217,7 @@ class Environment
 
 		// If one exists, load local config
 		$fileLocalConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
-						   .DIRECTORY_SEPARATOR.'local.php';
+			.DIRECTORY_SEPARATOR.'local.php';
 		if (file_exists($fileLocalConfig)) {
 			// Merge local config into previously merged config
 			$configLocal = require($fileLocalConfig);
@@ -226,13 +231,13 @@ class Environment
 	 * Sets the environment and configuration for the selected mode.
 	 *
 	 * @param array $config configuration array
+	 * @throws Exception
 	 */
 	protected function setEnvironment($config)
 	{
 		// Normalize the framework path
 		$framework = str_replace('\\', DIRECTORY_SEPARATOR, realpath($config['yiiFramework']));
-
-		if(!is_dir($framework)) {
+		if (!is_dir($framework)) {
 			throw new Exception('Invalid Yii framework path "'.$config['yiiFramework'].'".');
 		}
 
@@ -246,12 +251,14 @@ class Environment
 		$this->yiiDebug = $config['yiiDebug'];
 		$this->yiiTraceLevel = $config['yiiTraceLevel'];
 
-		if(isset($config['web']['config']) && !empty($config['web']['config']))
+		if (isset($config['web']['config']) && !empty($config['web']['config'])) {
 			$this->web = $config['web']['config'];
+		}
 		$this->web['params']['environment'] = strtolower($this->_mode);
 
-		if(isset($config['console']['config']) && !empty($config['console']['config']))
+		if (isset($config['console']['config']) && !empty($config['console']['config'])) {
 			$this->console = $config['console']['config'];
+		}
 		$this->console['params']['environment'] = strtolower($this->_mode);
 
 		$this->yiiSetPathOfAlias = $config['yiiSetPathOfAlias'];
@@ -265,7 +272,7 @@ class Environment
 	 */
 	public function runYiiStatics()
 	{
-		foreach($this->yiiSetPathOfAlias as $alias => $path) {
+		foreach ($this->yiiSetPathOfAlias as $alias => $path) {
 			Yii::setPathOfAlias($alias, $path);
 		}
 	}
@@ -291,15 +298,16 @@ class Environment
 	 * @param array $b array to be merged from
 	 * @return array the merged array (the original arrays are not changed.)
 	 */
-	protected static function mergeArray($a,$b)
+	protected static function mergeArray($a, $b)
 	{
-		foreach($b as $k=>$v) {
-			if(is_integer($k))
-				$a[]=$v;
-			else if(is_array($v) && isset($a[$k]) && is_array($a[$k]))
-				$a[$k]=self::mergeArray($a[$k],$v);
-			else
-				$a[$k]=$v;
+		foreach ($b as $k => $v) {
+			if (is_integer($k)) {
+				$a[] = $v;
+			} else if (is_array($v) && isset($a[$k]) && is_array($a[$k])) {
+				$a[$k] = self::mergeArray($a[$k], $v);
+			} else {
+				$a[$k] = $v;
+			}
 		}
 		return $a;
 	}
