@@ -3,7 +3,7 @@
 /**
  * @name Environment
  * @author Jani Mikkonen <janisto@php.net>
- * @version 1.3.0-dev
+ * @version 1.3.0
  * @license public domain (http://unlicense.org)
  * @package extensions.environment
  * @link https://github.com/janisto/yii-environment
