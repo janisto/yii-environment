@@ -1,6 +1,6 @@
 <?php
 
-require('Environment.php');
+require('/path/to/Environment.php');
 
 /**
  * This is an example Environment when you want to use a custom ENV_VAR
@@ -10,7 +10,7 @@ require('Environment.php');
  * bootstrap file, instead of the base Environment class.
  */
 
-class ExampleEnvironment extends Environment
+class CustomEnvironment extends Environment
 {
 	// Environment settings
 	const ENV_VAR = 'EXAMPLE_ENVIRONMENT';	// environment variable
