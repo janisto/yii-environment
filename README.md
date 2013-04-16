@@ -6,16 +6,21 @@ Predefine configurations for use in different environments, like development, te
 Changelog
 ---------
 
-### v1.2
+### v1.3.0
+
+- Code refactor and structure change.
+- Composer support.
+
+### v1.2.0
 
 - Code refactor and DocBlock clean up.
 
-### v1.1
+### v1.1.0
 
 - Define only Yii framework path in configuration files instead of yii.php, yiit.php and yiilite.php.
 - Better CSS styles for showDebug().
 
-### v1.0
+### v1.0.0
 
 - Initial version.
 
