@@ -6,6 +6,10 @@ Predefine configurations for use in different environments, like development, te
 Changelog
 ---------
 
+### v1.4.0
+
+- Update Composer support.
+
 ### v1.3.0
 
 - Code refactor and structure change.
