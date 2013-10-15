@@ -3,10 +3,7 @@
 	"description": "Environment class for Yii, used to set configuration for console and web apps depending on the server environment.",
 	"keywords": ["yii", "environment", "extension"],
 	"homepage": "https://github.com/janisto/yii-environment",
-	"type": "yii-extension",
-	"extra": {
-		"installer-name": "environment"
-	},
+	"type": "library",
 	"license": "public domain",
 	"authors": [
 		{
