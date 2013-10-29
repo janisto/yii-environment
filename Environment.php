@@ -3,7 +3,7 @@
 /**
  * @name Environment
  * @author Jani Mikkonen <janisto@php.net>
- * @version 1.4.0
+ * @version 1.5.0
  * @license public domain (http://unlicense.org)
  * @package extensions.environment
  * @link https://github.com/janisto/yii-environment
@@ -202,7 +202,7 @@ class Environment
 		if (!file_exists($fileMainConfig)) {
 			throw new Exception('Cannot find main config file "'.$fileMainConfig.'".');
 		}
-		$configMain = require($fileMainConfig);
+		$config = require($fileMainConfig);
 
 		// Load specific config
 		$fileSpecificConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
@@ -211,17 +211,20 @@ class Environment
 			throw new Exception('Cannot find mode specific config file "'.$fileSpecificConfig.'".');
 		}
 		$configSpecific = require($fileSpecificConfig);
-
 		// Merge specific config into main config
-		$config = self::mergeArray($configMain, $configSpecific);
+		if (is_array($configSpecific)) {
+			$config = self::mergeArray($config, $configSpecific);
+		}
 
 		// If one exists, load local config
 		$fileLocalConfig = dirname(__FILE__).DIRECTORY_SEPARATOR.constant(get_class($this).'::CONFIG_DIR')
 			.DIRECTORY_SEPARATOR.'local.php';
 		if (file_exists($fileLocalConfig)) {
-			// Merge local config into previously merged config
 			$configLocal = require($fileLocalConfig);
-			$config = self::mergeArray($config, $configLocal);
+			// Merge local config into previously merged config
+			if (is_array($configLocal)) {
+				$config = self::mergeArray($config, $configLocal);
+			}
 		}
 
 		return $config;
