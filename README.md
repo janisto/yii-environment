@@ -6,6 +6,10 @@ Predefine configurations for use in different environments, like development, te
 Changelog
 ---------
 
+### v1.5.0
+
+- Improve configuration merging.
+
 ### v1.4.0
 
 - Update Composer support.
