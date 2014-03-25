@@ -3,7 +3,7 @@
 /**
  * @name Environment
  * @author Jani Mikkonen <janisto@php.net>
- * @version 1.5.0
+ * @version 1.6.0
  * @license public domain (http://unlicense.org)
  * @package extensions.environment
  * @link https://github.com/janisto/yii-environment
@@ -264,7 +264,9 @@ class Environment
 		}
 		$this->console['params']['environment'] = strtolower($this->_mode);
 
-		$this->yiiSetPathOfAlias = $config['yiiSetPathOfAlias'];
+		if (isset($config['yiiSetPathOfAlias']) && !empty($config['yiiSetPathOfAlias'])) {
+			$this->yiiSetPathOfAlias = $config['yiiSetPathOfAlias'];
+		}
 	}
 
 	/**
