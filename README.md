@@ -6,6 +6,11 @@ Predefine configurations for use in different environments, like development, te
 Changelog
 ---------
 
+### v1.6.0
+
+- Fix: missing yiiSetPathOfAlias.
+- Update examples.
+
 ### v1.5.0
 
 - Improve configuration merging.
