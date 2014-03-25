@@ -1,5 +1,14 @@
-# Set Yii environment:
+# Rewrite rules
+RewriteEngine on
 
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteRule . index.php
+
+# Set Yii environment:
 #SetEnv YII_ENVIRONMENT DEVELOPMENT
 #SetEnv YII_ENVIRONMENT STAGING
 #SetEnv YII_ENVIRONMENT TEST

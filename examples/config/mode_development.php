@@ -21,12 +21,6 @@ return array(
 	'yiiDebug'=>true,
 	'yiiTraceLevel'=>3,
 
-	// Static function Yii::setPathOfAlias()
-	'yiiSetPathOfAlias'=>array(
-		// uncomment the following to define a path alias
-		//'local'=>'path/to/local-folder'
-	),
-	
 	// Web application configuration.
 	'web'=>array(
 
@@ -47,21 +41,19 @@ return array(
 			// Application components
 			'components'=>array(
 
-				// Cache
-				'cache'=>array(
-					'class'=>'CDummyCache',
-				),
-				
 				// Database
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=DEV_HOST;dbname=DEV_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					//'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>true,
 					'enableParamLogging'=>true,
+					'schemaCachingDuration'=>5,
 				),
+
 
 				// Application Log
 				'log'=>array(
@@ -87,13 +79,11 @@ return array(
 						),
 					),
 				),
-
 			),
 
 			// Application-level parameters that can be accessed using Yii::app()->params['paramName']
 			'params'=>array(
 			),
-
 		),
 	),
 
@@ -107,19 +97,15 @@ return array(
 			// Application components
 			'components'=>array(
 
-				// Cache
-				'cache'=>array(
-					'class'=>'CDummyCache',
-				),
-
-				// Database
+				// Database. Don't use schema cache.
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=DEV_HOST;dbname=DEV_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					//'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>true,
 					'enableParamLogging'=>true,
 				),
 
@@ -146,13 +132,11 @@ return array(
 						),
 					),
 				),
-				
 			),
 
 			// Application-level parameters that can be accessed using Yii::app()->params['paramName']
 			'params'=>array(
 			),
-			
 		),
 	),
 );

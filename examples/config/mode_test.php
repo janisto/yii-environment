@@ -8,7 +8,7 @@
  * - Standard production error pages (404, 500, etc.)
  */
 
-return 	array(
+return array(
 
 	// Set Yii framework path relative to Environment.php
 	'yiiFramework'=>dirname(__FILE__) . '/../../../../yii/framework',
@@ -17,14 +17,8 @@ return 	array(
 	'yiiLite'=>false,
 
 	// Set YII_DEBUG and YII_TRACE_LEVEL flags
-	'yiiDebug'=>false,
-	'yiiTraceLevel'=>0,
-
-	// Static function Yii::setPathOfAlias()
-	'yiiSetPathOfAlias'=>array(
-		// uncomment the following to define a path alias
-		//'local'=>'path/to/local-folder'
-	),
+	'yiiDebug'=>true,
+	'yiiTraceLevel'=>1,
 
 	// Web application configuration.
 	'web'=>array(
@@ -32,10 +26,6 @@ return 	array(
 		// This is the specific Web application configuration for this mode.
 		// Supplied config elements will be merged into the main config array.
 		'config'=>array(
-
-			// Modules
-			'modules'=>array(
-			),
 
 			// Application components
 			'components'=>array(
@@ -47,13 +37,15 @@ return 	array(
 	
 				// Database
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=TEST_HOST;dbname=TEST_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>false,
 					'enableParamLogging'=>false,
+					'schemaCachingDuration'=>3600,
 				),
 
 				// URL Manager
@@ -89,12 +81,9 @@ return 	array(
 						),
 					),
 				),
-
 			),
-
 		),
 	),
-
 
 	// Console application configuration.
 	'console'=>array(
@@ -111,14 +100,15 @@ return 	array(
 					'class'=>'CFileCache',
 				),
 
-				// Database
+				// Database. Don't use schema cache.
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=TEST_HOST;dbname=TEST_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>false,
 					'enableParamLogging'=>false,
 				),
 
@@ -150,7 +140,6 @@ return 	array(
 					),
 				),
 			),
-
 		),
 	),
 );

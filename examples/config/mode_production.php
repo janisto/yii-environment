@@ -10,22 +10,6 @@
 
 return array(
 
-	// Set Yii framework path relative to Environment.php
-	//'yiiFramework'=>dirname(__FILE__) . '/../../../yii/framework',
-
-	// Include yiilite if this is set to true. Performance boost if APC cache is in use.
-	'yiiLite'=>true,
-
-	// Set YII_DEBUG and YII_TRACE_LEVEL flags
-	'yiiDebug'=>false,
-	'yiiTraceLevel'=>0,
-
-	// Static function Yii::setPathOfAlias()
-	'yiiSetPathOfAlias'=>array(
-		// uncomment the following to define a path alias
-		//'local'=>'path/to/local-folder'
-	),
-
 	// Web application configuration.
 	'web'=>array(
 
@@ -33,27 +17,20 @@ return array(
 		// Supplied config elements will be merged into the main config array.
 		'config'=>array(
 
-			// Modules
-			'modules'=>array(
-			),
-
 			// Application components
 			'components'=>array(
 
-				// Cache
-				'cache'=>array(
-					'class'=>'CApcCache',
-				),
-
 				// Database
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=PROD_HOST;dbname=PROD_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>false,
 					'enableParamLogging'=>false,
+					'schemaCachingDuration'=>3600,
 				),
 
 				// Application Log
@@ -63,24 +40,21 @@ return array(
 						// Save log messages on file
 						array(
 							'class'=>'CFileLogRoute',
-							'logFile'=>'web.log',
-							'levels'=>'error, warning',
+							'logFile'=>'web_error.log',
+							'levels'=>'error',
 						),
-						// Send errors via email to the system admin
 						array(
-							'class'=>'CEmailLogRoute',
-							'levels'=>'error, warning',
-							'emails'=>'webadmin@example.com',
+							'class'=>'CFileLogRoute',
+							'logFile'=>'web_warning.log',
+							'levels'=>'warning',
 						),
 					),
 				),
-
 			),
 
 			// Application-level parameters that can be accessed using Yii::app()->params['paramName']
 			'params'=>array(
 			),
-
 		),
 	),
 
@@ -94,19 +68,15 @@ return array(
 			// Application components
 			'components'=>array(
 
-				// Cache
-				'cache'=>array(
-					'class'=>'CApcCache',
-				),
-
-				// Database
+				// Database. Don't use schema cache.
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=PROD_HOST;dbname=PROD_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>false,
 					'enableParamLogging'=>false,
 				),
 
@@ -117,24 +87,21 @@ return array(
 						// Save log messages on file
 						array(
 							'class'=>'CFileLogRoute',
-							'logFile'=>'console.log',
-							'levels'=>'error, warning',
+							'logFile'=>'console_error.log',
+							'levels'=>'error',
 						),
-						// Send errors via email to the system admin
 						array(
-							'class'=>'CEmailLogRoute',
-							'levels'=>'error, warning',
-							'emails'=>'webadmin@example.com',
+							'class'=>'CFileLogRoute',
+							'logFile'=>'console_warning.log',
+							'levels'=>'warning',
 						),
 					),
 				),
-
 			),
 
 			// Application-level parameters that can be accessed using Yii::app()->params['paramName']
 			'params'=>array(
 			),
-
 		),
 	),
 );

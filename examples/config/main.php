@@ -17,12 +17,6 @@ return array(
 	'yiiDebug'=>false,
 	'yiiTraceLevel'=>0,
 
-	// Static function Yii::setPathOfAlias()
-	'yiiSetPathOfAlias'=>array(
-		// uncomment the following to define a path alias
-		//'local'=>'path/to/local-folder'
-	),
-
 	// Web application configuration.
 	'web'=>array(
 
@@ -32,6 +26,11 @@ return array(
 
 			'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 			'name'=>'My Web Application',
+
+			// Path aliases
+			'aliases'=>array(
+				'vendor'=>realpath(__DIR__ . '/../../vendor'),
+			),
 
 			// Preloading 'log' component
 			'preload'=>array(
@@ -50,16 +49,23 @@ return array(
 
 			// Application components
 			'components'=>array(
-			
+
+				// Cache
+				'cache'=>array(
+					'class'=>'CApcCache',
+				),
+
 				// Enable cookie-based authentication
 				'user'=>array(
 					'allowAutoLogin'=>true,
 				),
 
-				// Session cache. Requires cache application component.
-				// Storing sessions in APC is significantly faster than the default file-based session handling.
+				// Sessions
 				'session'=>array(
-					'class' => 'CCacheHttpSession',
+					'class'=>'system.web.CDbHttpSession',
+					'connectionID'=>'db',
+					'autoCreateSessionTable'=>false,
+					'sessionTableName'=>'{{session}}',
 				),
 				
 				// URL manager
@@ -84,9 +90,7 @@ return array(
 			'params'=>array(
 				'adminEmail'=>'webmaster@example.com',
 			),
-
 		),
-
 	),
 
 	// Console application configuration.
@@ -98,6 +102,11 @@ return array(
 
 			'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 			'name'=>'My Console Application',
+
+			// Path aliases
+			'aliases'=>array(
+				'vendor'=>realpath(__DIR__ . '/../../vendor'),
+			),
 
 			// Preloading 'log' component
 			'preload'=>array(
@@ -112,13 +121,27 @@ return array(
 
 			// Application components
 			'components'=>array(
+
+				// Cache
+				'cache'=>array(
+					'class'=>'CApcCache',
+				),
+			),
+
+			// Command mapping
+			'commandMap'=>array(
+				'migrate'=>array(
+					'class'=>'system.cli.commands.MigrateCommand',
+					'migrationPath'=>'application.migrations',
+					'migrationTable'=>'{{migration}}',
+					'connectionID'=>'db',
+				),
 			),
 
 			// Application-level parameters that can be accessed using Yii::app()->params['paramName']
 			'params'=>array(
 				'adminEmail'=>'webmaster@example.com',
 			),
-
 		),
 	),
 );

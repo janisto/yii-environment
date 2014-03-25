@@ -11,19 +11,6 @@ return array(
 	// Set Yii framework path relative to Environment.php
 	'yiiFramework'=>dirname(__FILE__) . '/../../../../yii/framework',
 
-	// Include yiilite if this is set to true. Performance boost if APC cache is in use.
-	'yiiLite'=>false,
-
-	// Set YII_DEBUG and YII_TRACE_LEVEL flags
-	'yiiDebug'=>true,
-	'yiiTraceLevel'=>3,
-
-	// Static function Yii::setPathOfAlias()
-	'yiiSetPathOfAlias'=>array(
-		// uncomment the following to define a path alias
-		//'local'=>'path/to/local-folder'
-	),
-
 	// Web application configuration.
 	'web'=>array(
 
@@ -34,19 +21,24 @@ return array(
 			// Application components
 			'components'=>array(
 
+				// Cache
+				'cache'=>array(
+					'class'=>'CFileCache',
+				),
+
 				// Database
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=LOCAL_HOST;dbname=LOCAL_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					//'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>true,
 					'enableParamLogging'=>true,
+					'schemaCachingDuration'=>5,
 				),
-
 			),
-
 		),
 	),
 
@@ -60,19 +52,23 @@ return array(
 			// Application components
 			'components'=>array(
 
-				// Database
+				// Cache
+				'cache'=>array(
+					'class'=>'CFileCache',
+				),
+
+				// Database. Don't use schema cache.
 				'db'=>array(
+					'tablePrefix'=>'xxx_',
 					'connectionString'=>'mysql:host=LOCAL_HOST;dbname=LOCAL_DB',
-					'emulatePrepare'=>true,
 					'username'=>'',
 					'password'=>'',
 					'charset'=>'utf8',
-					//'schemaCachingDuration'=>3600,
+					'emulatePrepare'=>true,
+					'enableProfiling'=>true,
 					'enableParamLogging'=>true,
 				),
-
 			),
-
 		),
 	),
 );
